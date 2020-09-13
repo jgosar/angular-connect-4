@@ -1,0 +1,67 @@
+.acf-connect-4__grid_container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  --grid-width: ~"max(500px, 30vw)";
+}
+
+.acf-connect-4__grid {
+  background-color: #1111cc;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: var(--grid-width);
+  height: calc(0.75 * var(--grid-width));
+}
+
+.acf-connect-4__row {
+  display: flex;
+  justify-content: space-around;
+}
+
+.acf-connect-4__cell {
+  display: inline;
+  height: calc(0.1 * var(--grid-width));
+  width: calc(0.1 * var(--grid-width));
+  border-radius: 50%;
+}
+
+.acf-connect-4__cell--value_0 {
+  background-color: black;
+}
+
+.acf-connect-4__cell--value_1 {
+  background-color: #cc1111;
+}
+
+.acf-connect-4__cell--value_2 {
+  background-color: #cccc11;
+}
+
+.acf-connect-4__score {
+  display: none;
+}
+
+.acf-connect-4__score--red {
+  background-color: red;
+}
+
+.acf-connect-4__score--yellow {
+  background-color: yellow;
+}
+
+.acf-connect-4__winner {
+  font-size: calc(0.1 * var(--grid-width));
+  width: var(--grid-width);
+  text-align: center;
+}
+
+.acf-connect-4__winner--red {
+  background-color: red;
+}
+
+.acf-connect-4__winner--yellow {
+  background-color: yellow;
+}
