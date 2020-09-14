@@ -1,12 +1,12 @@
 <div class="acf-connect-4__grid_container">
   <div class="acf-connect-4__grid">
-    <div class="acf-connect-4__row">
-      <div class="acf-connect-4__cell acf-connect-4__cell--value_0"></div>
-      <div class="acf-connect-4__cell acf-connect-4__cell--value_0"></div>
-    </div>
-    <div class="acf-connect-4__row">
-      <div class="acf-connect-4__cell acf-connect-4__cell--value_0"></div>
-      <div class="acf-connect-4__cell acf-connect-4__cell--value_0"></div>
+    <div class="acf-connect-4__row" *ngFor="let row of store.state.field">
+      <div
+        class="acf-connect-4__cell"
+        [ngClass]="getCellStyle(cellState)"
+        *ngFor="let cellState of row; let columnIndex = index"
+        (click)="store.dropToken(columnIndex)"
+      ></div>
     </div>
   </div>
 </div>
