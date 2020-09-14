@@ -21,3 +21,7 @@ function cloneArrayItem<T>(arrayItem: T): T {
     return arrayItem;
   }
 }
+
+export function sum(items: number[]): number {
+  return items.reduce((itemSum, item) => itemSum + item, 0);
+}
