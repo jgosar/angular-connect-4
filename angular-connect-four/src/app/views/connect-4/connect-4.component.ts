@@ -12,7 +12,7 @@ export class Connect4Component implements OnInit {
   constructor(public store: Connect4Store) {}
 
   ngOnInit() {
-    this.store.initState(6, 7, TokenType.RED);
+    this.store.initState(6, 7, 4, TokenType.RED);
   }
 
   getCellStyle(cellState: CellState): any {
