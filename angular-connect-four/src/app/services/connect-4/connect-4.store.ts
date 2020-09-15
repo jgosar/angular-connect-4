@@ -29,7 +29,7 @@ export class Connect4Store extends Store<Connect4StoreState> {
     });
   }
 
-  dropToken(columnIndex: number) {
+  dropToken(columnIndex: number, playNext: boolean = true) {
     if (this.state.winner || !this.canDropToken(this.state.field, columnIndex)) {
       return;
     }
@@ -41,18 +41,10 @@ export class Connect4Store extends Store<Connect4StoreState> {
       winner: this.getWinner(newField),
     });
 
-    /*const optionRatings: number[] = range(0, this.state.field[0].length).map((column) => {
-      const testField: CellState[][] = this.dropTokenIntoField(this.state.field, this.state.nextToken, column);
-      return this.getScore(this.state.nextToken, testField);
-    });
-    console.log('Options: ' + optionRatings);
-    console.log('BestMove0: ' + JSON.stringify(this.getBestMove(this.state.nextToken, this.state.field, 0)));
-    console.log('BestMove1: ' + JSON.stringify(this.getBestMove(this.state.nextToken, this.state.field, 1)));
-    console.log('BestMove2: ' + JSON.stringify(this.getBestMove(this.state.nextToken, this.state.field, 2)));
-    console.log('BestMove3: ' + JSON.stringify(this.getBestMove(this.state.nextToken, this.state.field, 3)));*/
-    console.log('BestMove4: ' + JSON.stringify(this.getBestMove(this.state.nextToken, this.state.field, 4)));
-    /*console.log('BestMove5: ' + JSON.stringify(this.getBestMove(this.state.nextToken, this.state.field, 5)));
-    console.log('BestMove6: ' + JSON.stringify(this.getBestMove(this.state.nextToken, this.state.field, 6)));*/
+    if (playNext) {
+      const computersMove: MoveScore = this.getBestMove(this.state.nextToken, this.state.field, 4);
+      this.dropToken(computersMove.move, false);
+    }
   }
 
   private canDropToken(field: CellState[][], columnIndex: number): boolean {
