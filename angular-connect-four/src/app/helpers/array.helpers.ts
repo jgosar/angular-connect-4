@@ -25,3 +25,13 @@ function cloneArrayItem<T>(arrayItem: T): T {
 export function sum(items: number[]): number {
   return items.reduce((itemSum, item) => itemSum + item, 0);
 }
+
+export function findMax<T>(items: T[], rankingProperty: (item: T) => number): T | undefined {
+  if (items.length === 0) {
+    return undefined;
+  }
+  return items.reduce(
+    (maxItem, currentItem) => (rankingProperty(currentItem) > rankingProperty(maxItem) ? currentItem : maxItem),
+    items[0]
+  );
+}

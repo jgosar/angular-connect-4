@@ -2,52 +2,80 @@ import { Injectable } from '@angular/core';
 import { Connect4StoreState } from './connect-4.store.state';
 import { Store } from 'rxjs-observable-store';
 import { TokenType } from 'src/app/types/token-type';
-import { createArray, getColumnValues, cloneArray, sum } from '../../helpers/array.helpers';
+import { createArray, getColumnValues, cloneArray, sum, findMax } from '../../helpers/array.helpers';
 import { CellState } from 'src/app/types/cell-state';
 import { CellCoords } from 'src/app/types/cell-coords';
 import { range } from 'src/app/helpers/common.helpers';
 import { ComboDirection, getComboDirectionNthCell } from 'src/app/types/combo-direction';
+import { MoveScore } from 'src/app/types/move-rating';
 
 @Injectable()
 export class Connect4Store extends Store<Connect4StoreState> {
+  private connectHowMany: number;
+  private cellCombos: CellCoords[][];
+
   constructor() {
     super(new Connect4StoreState());
   }
 
   initState(rows: number, columns: number, connectHowMany: number, firstToken: TokenType) {
+    this.connectHowMany = connectHowMany;
+    this.cellCombos = this.getCellCombos(rows, columns);
+
     this.setState({
       field: createArray(rows, createArray(columns, 0)),
-      connectHowMany,
-      cellCombos: this.getCellCombos(rows, columns, connectHowMany),
       nextToken: firstToken,
       winner: undefined,
     });
   }
 
   dropToken(columnIndex: number) {
-    if (!this.canDropToken(columnIndex, this.state.field)) {
+    if (this.state.winner || !this.canDropToken(this.state.field, columnIndex)) {
       return;
     }
+    const newField: CellState[][] = this.dropTokenIntoField(this.state.field, this.state.nextToken, columnIndex);
     this.setState({
       ...this.state,
-      field: this.dropTokenIntoField(this.state.field, this.state.nextToken, columnIndex),
+      field: newField,
       nextToken: this.getOtherTokenType(this.state.nextToken),
-      winner: undefined,
+      winner: this.getWinner(newField),
     });
 
-    const optionRatings: number[] = range(0, this.state.field[0].length).map((column) => {
+    /*const optionRatings: number[] = range(0, this.state.field[0].length).map((column) => {
       const testField: CellState[][] = this.dropTokenIntoField(this.state.field, this.state.nextToken, column);
-      return this.getScore(this.state.nextToken, testField, this.state.cellCombos);
+      return this.getScore(this.state.nextToken, testField);
     });
     console.log('Options: ' + optionRatings);
+    console.log('BestMove0: ' + JSON.stringify(this.getBestMove(this.state.nextToken, this.state.field, 0)));
+    console.log('BestMove1: ' + JSON.stringify(this.getBestMove(this.state.nextToken, this.state.field, 1)));
+    console.log('BestMove2: ' + JSON.stringify(this.getBestMove(this.state.nextToken, this.state.field, 2)));
+    console.log('BestMove3: ' + JSON.stringify(this.getBestMove(this.state.nextToken, this.state.field, 3)));*/
+    console.log('BestMove4: ' + JSON.stringify(this.getBestMove(this.state.nextToken, this.state.field, 4)));
+    /*console.log('BestMove5: ' + JSON.stringify(this.getBestMove(this.state.nextToken, this.state.field, 5)));
+    console.log('BestMove6: ' + JSON.stringify(this.getBestMove(this.state.nextToken, this.state.field, 6)));*/
   }
 
-  private canDropToken(columnIndex: number, field: CellState[][]): boolean {
+  private canDropToken(field: CellState[][], columnIndex: number): boolean {
     return field[0][columnIndex] === 0;
   }
 
   private getOtherTokenType(tokenType: TokenType): TokenType {
     return tokenType === TokenType.RED ? TokenType.YELLOW : TokenType.RED;
+  }
+
+  private getWinner(field: CellState[][]): TokenType | undefined {
+    return this.cellCombos
+      .map((cellCombo) => this.getWinnerForCombo(field, cellCombo))
+      .find((winner) => winner !== undefined);
+  }
+
+  private getWinnerForCombo(field: CellState[][], cellCombo: CellCoords[]): TokenType | undefined {
+    const cellStatesInCombo: CellState[] = cellCombo.map((cellCoords) => field[cellCoords.row][cellCoords.column]);
+    if (cellStatesInCombo.every((cellState) => cellState === TokenType.RED)) {
+      return TokenType.RED;
+    } else if (cellStatesInCombo.every((cellState) => cellState === TokenType.YELLOW)) {
+      return TokenType.YELLOW;
+    }
   }
 
   private dropTokenIntoField(field: CellState[][], tokenType: TokenType, columnIndex: number): CellState[][] {
@@ -70,7 +98,7 @@ export class Connect4Store extends Store<Connect4StoreState> {
     return columnValues.length - 1;
   }
 
-  private getCellCombos(rowCount: number, columnCount: number, connectHowMany: number): CellCoords[][] {
+  private getCellCombos(rowCount: number, columnCount: number): CellCoords[][] {
     const allDirections: ComboDirection[] = [
       ComboDirection.HORIZONTAL,
       ComboDirection.DIAGONAL_1,
@@ -79,18 +107,12 @@ export class Connect4Store extends Store<Connect4StoreState> {
     ];
 
     return allDirections.reduce<CellCoords[][]>(
-      (combos, direction) =>
-        combos.concat(this.getCellCombosForDirection(rowCount, columnCount, connectHowMany, direction)),
+      (combos, direction) => combos.concat(this.getCellCombosForDirection(rowCount, columnCount, direction)),
       []
     );
   }
 
-  private getCellCombosForDirection(
-    rowCount: number,
-    columnCount: number,
-    connectHowMany: number,
-    direction: ComboDirection
-  ): CellCoords[][] {
+  private getCellCombosForDirection(rowCount: number, columnCount: number, direction: ComboDirection): CellCoords[][] {
     let startCells: CellCoords[];
 
     if (direction !== ComboDirection.DIAGONAL_2) {
@@ -98,17 +120,22 @@ export class Connect4Store extends Store<Connect4StoreState> {
       const finalStartCellCoords: CellCoords = getComboDirectionNthCell(
         direction,
         { row: rowCount - 1, column: columnCount - 1 },
-        1 - connectHowMany
+        1 - this.connectHowMany
       );
 
       // Get a list of all coordinates from which such a combination can start
       startCells = this.getCellCoordsInArea(0, finalStartCellCoords.row + 1, 0, finalStartCellCoords.column + 1);
     } else if (direction === ComboDirection.DIAGONAL_2) {
       // This direction is the exception, because it can't start at coordinates (0, 0)
-      startCells = this.getCellCoordsInArea(0, rowCount - (connectHowMany - 1), connectHowMany - 1, columnCount);
+      startCells = this.getCellCoordsInArea(
+        0,
+        rowCount - (this.connectHowMany - 1),
+        this.connectHowMany - 1,
+        columnCount
+      );
     }
 
-    return startCells.map((startCell) => this.extendCombo(direction, connectHowMany, startCell));
+    return startCells.map((startCell) => this.extendCombo(direction, this.connectHowMany, startCell));
   }
 
   private extendCombo(direction: ComboDirection, length: number, startCell: CellCoords): CellCoords[] {
@@ -123,10 +150,12 @@ export class Connect4Store extends Store<Connect4StoreState> {
     return result;
   }
 
-  private getScore(player: TokenType, field: CellState[][], cellCombos: CellCoords[][]) {
-    const playerScore: number = sum(cellCombos.map((cellCombo) => this.getScoreForCombo(player, field, cellCombo)));
+  private getScore(player: TokenType, field: CellState[][]) {
+    const playerScore: number = sum(
+      this.cellCombos.map((cellCombo) => this.getScoreForCombo(player, field, cellCombo))
+    );
     const opponentScore: number = sum(
-      cellCombos.map((cellCombo) => this.getScoreForCombo(this.getOtherTokenType(player), field, cellCombo))
+      this.cellCombos.map((cellCombo) => this.getScoreForCombo(this.getOtherTokenType(player), field, cellCombo))
     );
 
     return playerScore - opponentScore;
@@ -145,6 +174,39 @@ export class Connect4Store extends Store<Connect4StoreState> {
       } else {
         return Math.pow(10, playerTokensCount);
       }
+    }
+  }
+
+  private getBestMove(playersToken: TokenType, field: CellState[][], levels: number): MoveScore {
+    const moveScores: MoveScore[] = this.getPossibleMoves(field).map((move) => ({
+      move,
+      score: this.getMoveScore(playersToken, field, levels, move),
+    }));
+    return findMax(moveScores, (moveScore) => moveScore.score);
+  }
+
+  private getPossibleMoves(field: CellState[][]): number[] {
+    if (this.getWinner(field) !== undefined) {
+      return [];
+    }
+    return range(0, field[0].length).filter((column) => this.canDropToken(field, column));
+  }
+
+  private getMoveScore(playersToken: TokenType, field: CellState[][], levels: number, move: number) {
+    const nextField: CellState[][] = this.dropTokenIntoField(field, playersToken, move);
+    if (levels === 0 || this.getWinner(nextField) !== undefined) {
+      return this.getScore(playersToken, nextField);
+    } else {
+      const bestOpponentsMove: MoveScore = this.getBestMove(
+        this.getOtherTokenType(playersToken),
+        nextField,
+        levels - 1
+      );
+      if (bestOpponentsMove === undefined) {
+        // No moves are possible because the game is full
+        return this.getScore(playersToken, nextField);
+      }
+      return -bestOpponentsMove.score;
     }
   }
 }
