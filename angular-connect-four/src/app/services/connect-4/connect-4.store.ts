@@ -12,7 +12,6 @@ import { MoveScore } from 'src/app/types/move-rating';
 @Injectable()
 export class Connect4Store extends Store<Connect4StoreState> {
   private connectHowMany: number;
-  private cellCombos: CellCoords[][];
 
   constructor() {
     super(new Connect4StoreState());
@@ -20,10 +19,14 @@ export class Connect4Store extends Store<Connect4StoreState> {
 
   initState(rows: number, columns: number, connectHowMany: number, firstToken: TokenType) {
     this.connectHowMany = connectHowMany;
-    this.cellCombos = this.getCellCombos(rows, columns);
+    const cellCombos: CellCoords[][] = this.getCellCombos(rows, columns);
 
     this.setState({
       field: createArray(rows, createArray(columns, 0)),
+      availableCellCombos: {
+        [TokenType.RED]: cellCombos,
+        [TokenType.YELLOW]: cellCombos,
+      },
       nextToken: firstToken,
       winner: undefined,
     });
@@ -33,16 +36,32 @@ export class Connect4Store extends Store<Connect4StoreState> {
     if (this.state.winner || !this.canDropToken(this.state.field, columnIndex)) {
       return;
     }
-    const newField: CellState[][] = this.dropTokenIntoField(this.state.field, this.state.nextToken, columnIndex);
-    this.setState({
-      ...this.state,
-      field: newField,
-      nextToken: this.getOtherTokenType(this.state.nextToken),
-      winner: this.getWinner(newField),
-    });
+    this.setState(this.dropTokenIntoField(this.state, columnIndex));
 
     if (playNext) {
-      const computersMove: MoveScore = this.getBestMove(this.state.nextToken, this.state.field, 4);
+      const possibleMovesCount: number = this.getPossibleMoves(this.state).length;
+      let predictionDepth: number = 4;
+      switch (possibleMovesCount) {
+        case 7:
+          predictionDepth = 4;
+          break;
+        case 6:
+          predictionDepth = 5;
+          break;
+        case 5:
+          predictionDepth = 6;
+          break;
+        case 4:
+          predictionDepth = 7;
+          break;
+        case 3:
+          predictionDepth = 9;
+          break;
+        case 2:
+          predictionDepth = 13;
+          break;
+      }
+      const computersMove: MoveScore = this.getBestMove(this.state, predictionDepth);
       this.dropToken(computersMove.move, false);
     }
   }
@@ -55,9 +74,10 @@ export class Connect4Store extends Store<Connect4StoreState> {
     return tokenType === TokenType.RED ? TokenType.YELLOW : TokenType.RED;
   }
 
-  private getWinner(field: CellState[][]): TokenType | undefined {
-    return this.cellCombos
-      .map((cellCombo) => this.getWinnerForCombo(field, cellCombo))
+  private getWinner(state: Connect4StoreState): TokenType | undefined {
+    return this.state.availableCellCombos[TokenType.RED]
+      .concat(this.state.availableCellCombos[TokenType.YELLOW])
+      .map((cellCombo) => this.getWinnerForCombo(state.field, cellCombo))
       .find((winner) => winner !== undefined);
   }
 
@@ -70,11 +90,33 @@ export class Connect4Store extends Store<Connect4StoreState> {
     }
   }
 
-  private dropTokenIntoField(field: CellState[][], tokenType: TokenType, columnIndex: number): CellState[][] {
-    const rowIndex: number = this.getLowestFreeCell(getColumnValues(columnIndex, field));
-    const newField: CellState[][] = cloneArray(field);
-    newField[rowIndex][columnIndex] = tokenType;
-    return newField;
+  private dropTokenIntoField(state: Connect4StoreState, columnIndex: number): Connect4StoreState {
+    const currentToken: TokenType = state.nextToken;
+    const otherToken: TokenType = this.getOtherTokenType(currentToken);
+    const rowIndex: number = this.getLowestFreeCell(getColumnValues(columnIndex, state.field));
+    const newField: CellState[][] = cloneArray(state.field);
+    newField[rowIndex][columnIndex] = currentToken;
+
+    // Remove all the combos that the opponent can't use because we have blocked them
+    const newOpponentCellCombos = state.availableCellCombos[otherToken].filter(
+      (cellCombo) => !cellCombo.some((cell) => cell.row === rowIndex && cell.column === columnIndex)
+    );
+
+    let newState: Connect4StoreState = {
+      ...state,
+      field: newField,
+      availableCellCombos: {
+        ...state.availableCellCombos,
+        [otherToken]: newOpponentCellCombos,
+      },
+      nextToken: otherToken,
+    };
+
+    newState = {
+      ...newState,
+      winner: this.getWinner(newState),
+    };
+    return newState;
   }
 
   private getLowestFreeCell(columnValues: CellState[]): number | undefined {
@@ -142,61 +184,65 @@ export class Connect4Store extends Store<Connect4StoreState> {
     return result;
   }
 
-  private getScore(player: TokenType, field: CellState[][]) {
+  private getScore(player: TokenType, state: Connect4StoreState) {
+    const playerCombos: CellCoords[][] = this.state.availableCellCombos[player];
     const playerScore: number = sum(
-      this.cellCombos.map((cellCombo) => this.getScoreForCombo(player, field, cellCombo))
+      playerCombos.map((cellCombo) => this.getScoreForCombo(player, state.field, cellCombo))
     );
+    const opponent: TokenType = this.getOtherTokenType(player);
+    const opponentCombos: CellCoords[][] = this.state.availableCellCombos[opponent];
     const opponentScore: number = sum(
-      this.cellCombos.map((cellCombo) => this.getScoreForCombo(this.getOtherTokenType(player), field, cellCombo))
+      opponentCombos.map((cellCombo) => this.getScoreForCombo(opponent, state.field, cellCombo))
     );
 
     return playerScore - opponentScore;
   }
 
   private getScoreForCombo(playersToken: TokenType, field: CellState[][], cellCombo: CellCoords[]): number {
+    const isComboVertical: boolean = cellCombo[0].column == cellCombo[1].column;
+    let score: number;
     const cellStatesInCombo: CellState[] = cellCombo.map((cellCoords) => field[cellCoords.row][cellCoords.column]);
     if (cellStatesInCombo.some((cellState) => cellState !== 0 && cellState !== playersToken)) {
-      return 0;
+      score = 0;
     } else if (cellStatesInCombo.every((cellState) => cellState === playersToken)) {
-      return 10000000;
+      score = 10000000;
     } else {
       const playerTokensCount: number = cellStatesInCombo.filter((cellState) => cellState === playersToken).length;
-      if (playerTokensCount === 0) {
-        return 0;
-      } else {
-        return Math.pow(10, playerTokensCount);
-      }
+      score = Math.pow(10, playerTokensCount);
     }
+
+    if (isComboVertical) {
+      // Vertical combos are trivial to block, so they shouldn't get a very large score
+      score /= 5;
+    }
+
+    return score;
   }
 
-  private getBestMove(playersToken: TokenType, field: CellState[][], levels: number): MoveScore {
-    const moveScores: MoveScore[] = this.getPossibleMoves(field).map((move) => ({
+  private getBestMove(state: Connect4StoreState, levels: number): MoveScore {
+    const moveScores: MoveScore[] = this.getPossibleMoves(state).map((move) => ({
       move,
-      score: this.getMoveScore(playersToken, field, levels, move),
+      score: this.getMoveScore(state, levels, move),
     }));
     return findMax(moveScores, (moveScore) => moveScore.score);
   }
 
-  private getPossibleMoves(field: CellState[][]): number[] {
-    if (this.getWinner(field) !== undefined) {
+  private getPossibleMoves(state: Connect4StoreState): number[] {
+    if (this.getWinner(state) !== undefined) {
       return [];
     }
-    return range(0, field[0].length).filter((column) => this.canDropToken(field, column));
+    return range(0, state.field[0].length).filter((column) => this.canDropToken(state.field, column));
   }
 
-  private getMoveScore(playersToken: TokenType, field: CellState[][], levels: number, move: number) {
-    const nextField: CellState[][] = this.dropTokenIntoField(field, playersToken, move);
-    if (levels === 0 || this.getWinner(nextField) !== undefined) {
-      return this.getScore(playersToken, nextField);
+  private getMoveScore(state: Connect4StoreState, levels: number, move: number) {
+    const nextState: Connect4StoreState = this.dropTokenIntoField(state, move);
+    if (levels === 0 || this.getWinner(nextState) !== undefined) {
+      return this.getScore(state.nextToken, nextState);
     } else {
-      const bestOpponentsMove: MoveScore = this.getBestMove(
-        this.getOtherTokenType(playersToken),
-        nextField,
-        levels - 1
-      );
+      const bestOpponentsMove: MoveScore = this.getBestMove(nextState, levels - 1);
       if (bestOpponentsMove === undefined) {
         // No moves are possible because the game is full
-        return this.getScore(playersToken, nextField);
+        return this.getScore(state.nextToken, nextState);
       }
       return -bestOpponentsMove.score;
     }
