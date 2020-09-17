@@ -1,8 +1,5 @@
 <div class="acf-connect-4__grid_container">
-  <div *ngIf="store.state.winner === 1" class="acf-connect-4__winner acf-connect-4__winner--red">🎉Winner: Red🎉</div>
-  <div *ngIf="store.state.winner === 2" class="acf-connect-4__winner acf-connect-4__winner--yellow">
-    🎉Winner: Yellow🎉
-  </div>
+  <acf-winner-banner [winner]="store.state.winner"></acf-winner-banner>
   <div class="acf-connect-4__grid">
     <div class="acf-connect-4__row" *ngFor="let row of store.state.field">
       <div
@@ -13,8 +10,5 @@
       ></div>
     </div>
   </div>
-  <div *ngIf="store.state.winner === 1" class="acf-connect-4__winner acf-connect-4__winner--red">🎉Winner: Red🎉</div>
-  <div *ngIf="store.state.winner === 2" class="acf-connect-4__winner acf-connect-4__winner--yellow">
-    🎉Winner: Yellow🎉
-  </div>
+  <acf-winner-banner [winner]="store.state.winner"></acf-winner-banner>
 </div>

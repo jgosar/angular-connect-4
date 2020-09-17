@@ -39,6 +39,10 @@ export class Connect4Store extends Store<Connect4StoreState> {
     this.setState(this.dropTokenIntoField(this.state, columnIndex));
 
     if (playNext) {
+      if (this.state.winner) {
+        return;
+      }
+
       const possibleMovesCount: number = this.getPossibleMoves(this.state).length;
       let predictionDepth: number = 4;
       switch (possibleMovesCount) {
