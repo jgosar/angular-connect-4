@@ -5,7 +5,7 @@ import { CellCoords } from "src/app/types/cell-coords";
 import { TokenType } from "src/app/types/token-type";
 import { Connect4StoreState } from "../connect-4.store.state";
 import { InitGameReducerParams } from "./init-game-reducer.params";
-import { Reducer } from "./reducer";
+import { Reducer } from "../../../reducer-store/reducer";
 
 @Injectable()
 export class InitGameReducer implements Reducer<Connect4StoreState, InitGameReducerParams>{

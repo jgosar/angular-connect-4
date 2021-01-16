@@ -5,7 +5,7 @@ import { CellState } from "src/app/types/cell-state";
 import { TokenType } from "src/app/types/token-type";
 import { Connect4StoreState } from "../connect-4.store.state";
 import { DropTokenReducerParams } from "./drop-token-reducer.params";
-import { Reducer } from "./reducer";
+import { Reducer } from "../../../reducer-store/reducer";
 
 @Injectable()
 export class DropTokenReducer implements Reducer<Connect4StoreState, DropTokenReducerParams>{
