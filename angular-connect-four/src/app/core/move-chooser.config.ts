@@ -1,3 +1,5 @@
+export const DEFAULT_PREDICTION_DEPTH: number = 3;
+
 export const PREDICTION_DEPTHS_FOR_POSSIBLE_MOVES: {[key: number]: number} = {
   1:1,
 2:13,
@@ -6,4 +8,4 @@ export const PREDICTION_DEPTHS_FOR_POSSIBLE_MOVES: {[key: number]: number} = {
 5:6,
 6:5,
 7:4
-}
+};

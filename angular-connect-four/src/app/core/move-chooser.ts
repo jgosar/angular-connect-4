@@ -6,13 +6,13 @@ import { CellCoords } from "../types/cell-coords";
 import { CellState } from "../types/cell-state";
 import { MoveScore } from "../types/move-rating";
 import { TokenType } from "../types/token-type";
-import { PREDICTION_DEPTHS_FOR_POSSIBLE_MOVES } from "./combo-calculator.config";
+import { DEFAULT_PREDICTION_DEPTH, PREDICTION_DEPTHS_FOR_POSSIBLE_MOVES } from "./move-chooser.config";
 import { canDropToken, getOtherTokenType, getWinner } from "./common-utils";
 
 export function getBestMove(state: Connect4StoreState, predictionDepth?: number): MoveScore {
   if(!isDefined(predictionDepth)){
     const possibleMovesCount: number = getPossibleMoves(state).length;
-    predictionDepth = PREDICTION_DEPTHS_FOR_POSSIBLE_MOVES[possibleMovesCount];
+    predictionDepth = PREDICTION_DEPTHS_FOR_POSSIBLE_MOVES[possibleMovesCount]||DEFAULT_PREDICTION_DEPTH;
   }
 
   const moveScores: MoveScore[] = getPossibleMoves(state).map((move) => ({
@@ -59,11 +59,10 @@ function getScore(player: TokenType, state: Connect4StoreState) {
 }
 
 function getScoreForCombo(playersToken: TokenType, field: CellState[][], cellCombo: CellCoords[]): number {
-  const isComboVertical: boolean = cellCombo[0].column == cellCombo[1].column;
   let score: number;
   const cellStatesInCombo: CellState[] = cellCombo.map((cellCoords) => field[cellCoords.row][cellCoords.column]);
   if (cellStatesInCombo.some((cellState) => cellState !== 0 && cellState !== playersToken)) {
-    score = 0;
+    return 0;
   } else if (cellStatesInCombo.every((cellState) => cellState === playersToken)) {
     score = 10000000;
   } else {
@@ -71,6 +70,7 @@ function getScoreForCombo(playersToken: TokenType, field: CellState[][], cellCom
     score = Math.pow(10, playerTokensCount);
   }
 
+  const isComboVertical: boolean = cellCombo[0].column == cellCombo[1].column;
   if (isComboVertical) {
     // Vertical combos are trivial to block, so they shouldn't get a very large score
     score /= 5;

@@ -14,15 +14,4 @@ export class Connect4Component implements OnInit {
   ngOnInit() {
     this.store.initState(6, 7, 4, TokenType.RED);
   }
-
-  getCellStyle(cellState: CellState): any {
-    switch (cellState) {
-      case 0:
-        return { 'acf-connect-4__cell--value_0': true };
-      case TokenType.RED:
-        return { 'acf-connect-4__cell--value_1': true };
-      case TokenType.YELLOW:
-        return { 'acf-connect-4__cell--value_2': true };
-    }
-  }
 }
