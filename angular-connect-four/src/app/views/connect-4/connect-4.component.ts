@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Connect4Store } from 'src/app/services/connect-4/connect-4.store';
 import { TokenType } from 'src/app/types/token-type';
-import { CellState } from 'src/app/types/cell-state';
 
 @Component({
   selector: 'acf-connect-4',
