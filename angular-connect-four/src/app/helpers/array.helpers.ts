@@ -35,3 +35,15 @@ export function findMax<T>(items: T[], rankingProperty: (item: T) => number): T 
     items[0]
   );
 }
+
+export function flip2DArray<T>(array: T[][]): T[][] {
+  const result: T[][] = createArray(array[0].length, createArray(array.length, null));
+  
+  for(let i=0;i<array.length;i++){
+    for(let j=0;j<array[i].length;j++){
+      result[j][i]=array[i][j];
+    }
+  }
+
+  return result;
+}

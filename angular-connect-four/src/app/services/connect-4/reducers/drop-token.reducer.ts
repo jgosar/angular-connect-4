@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { canDropToken, getOtherTokenType, getWinner } from "src/app/core/common-utils";
+import { canDropToken, getLowestFreeCell, getOtherTokenType, getWinner } from "src/app/core/common-utils";
 import { cloneArray, getColumnValues } from "src/app/helpers/array.helpers";
 import { CellState } from "src/app/types/cell-state";
 import { TokenType } from "src/app/types/token-type";
@@ -18,7 +18,7 @@ export class DropTokenReducer implements Reducer<Connect4StoreState, DropTokenRe
 
     const currentToken: TokenType = state.nextToken;
     const otherToken: TokenType = getOtherTokenType(currentToken);
-    const rowIndex: number = this.getLowestFreeCell(getColumnValues(columnIndex, state.field));
+    const rowIndex: number = getLowestFreeCell(getColumnValues(columnIndex, state.field));
     const newField: CellState[][] = cloneArray(state.field);
     newField[rowIndex][columnIndex] = currentToken;
 
@@ -42,18 +42,5 @@ export class DropTokenReducer implements Reducer<Connect4StoreState, DropTokenRe
       winner: getWinner(newState),
     };
     return newState;
-  }
-
-  private getLowestFreeCell(columnValues: CellState[]): number | undefined {
-    for (let i = 0; i < columnValues.length; i++) {
-      if (columnValues[i] !== 0) {
-        if (i == 0) {
-          return undefined;
-        } else {
-          return i - 1;
-        }
-      }
-    }
-    return columnValues.length - 1;
   }
 }

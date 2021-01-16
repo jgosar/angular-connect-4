@@ -18,6 +18,15 @@ export function getWinner(state: Connect4StoreState): TokenType | undefined {
     .find((winner) => winner !== undefined);
 }
 
+export function getLowestFreeCell(columnValues: CellState[]): number | undefined {
+  const firstFilledCell: number = columnValues.findIndex(cellValue=>cellValue!==0);
+  switch(firstFilledCell){
+    case 0: return undefined;
+    case -1: return columnValues.length - 1;
+    default: return firstFilledCell - 1;
+  }
+}
+
 function getWinnerForCombo(field: CellState[][], cellCombo: CellCoords[]): TokenType | undefined {
   const cellStatesInCombo: CellState[] = cellCombo.map((cellCoords) => field[cellCoords.row][cellCoords.column]);
   if (cellStatesInCombo.every((cellState) => cellState === TokenType.RED)) {

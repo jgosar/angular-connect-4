@@ -1,17 +1,17 @@
 import { Injectable } from "@angular/core";
 import { getOtherTokenType } from "src/app/core/common-utils";
-import { createArray } from "src/app/helpers/array.helpers";
+import { createArray, flip2DArray } from "src/app/helpers/array.helpers";
 import { Reducer } from "src/app/reducer-store/reducer";
 import { CellCoords } from "src/app/types/cell-coords";
 import { CellState } from "src/app/types/cell-state";
+import { EncodedGameState } from "src/app/types/encoded-game-state";
 import { TokenType } from "src/app/types/token-type";
 import { Connect4StoreState } from "../connect-4.store.state";
 import { InitGameReducer } from "./init-game-reducer";
-import { LoadGameReducerParams } from "./load-game-reducer.params";
 
 @Injectable()
-export class LoadGameReducer implements Reducer<Connect4StoreState, LoadGameReducerParams>{
-  reduce(state: Connect4StoreState, params: LoadGameReducerParams): Connect4StoreState {
+export class LoadGameReducer implements Reducer<Connect4StoreState, EncodedGameState>{
+  reduce(state: Connect4StoreState, params: EncodedGameState): Connect4StoreState {
     const initGameReducer: InitGameReducer = new InitGameReducer();
     const newGameState: Connect4StoreState = initGameReducer.reduce(state, params.gameParams);
 
@@ -29,19 +29,7 @@ export class LoadGameReducer implements Reducer<Connect4StoreState, LoadGameRedu
   
   private loadCellStatesByColumn(playerOne: TokenType, field: CellState[][], encodedColumnStates: number[]): CellState[][] {
     const decodedColumnStates: CellState[][] = encodedColumnStates.map(ecs=>this.decodeColumnState(playerOne, field.length, ecs));
-    return this.flip2DArray(decodedColumnStates);
-  }
- 
-  private flip2DArray<T>(array: T[][]): T[][] {
-    const result: T[][] = createArray(array[0].length, createArray(array.length, null));
-    
-    for(let i=0;i<array.length;i++){
-      for(let j=0;j<array[i].length;j++){
-        result[j][i]=array[i][j];
-      }
-    }
-
-    return result;
+    return flip2DArray(decodedColumnStates);
   }
 
   private decodeColumnState(playerOne: TokenType, rowCount: number, encodedColumnState: number): CellState[]{
