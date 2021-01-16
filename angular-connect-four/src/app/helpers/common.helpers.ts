@@ -9,3 +9,7 @@ export function range(start: number, end: number): number[] {
   }
   return result;
 }
+
+export function isDefined(value: any): boolean{
+  return value!==null && value !== undefined;
+}
