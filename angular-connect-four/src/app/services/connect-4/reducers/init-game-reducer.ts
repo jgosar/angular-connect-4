@@ -19,6 +19,7 @@ export class InitGameReducer implements Reducer<Connect4StoreState, GameParams>{
       },
       nextToken: params.firstToken,
       winner: undefined,
+      humanPlayers: params.humanPlayers
     };
   }
 }

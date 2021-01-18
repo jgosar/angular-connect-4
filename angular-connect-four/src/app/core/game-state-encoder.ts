@@ -27,7 +27,8 @@ function encodeGameParams(state: Connect4StoreState): GameParams{
     rows: state.field.length,
     columns: state.field[0].length,
     connectHowMany,
-    firstToken: state.nextToken
+    firstToken: state.nextToken,
+    humanPlayers: state.humanPlayers
   };
 }
 

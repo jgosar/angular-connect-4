@@ -7,6 +7,7 @@ export class Connect4StoreState {
   availableCellCombos: { [key in TokenTypes]: CellCoords[][] };
   nextToken: TokenType;
   winner: TokenType | undefined;
+  humanPlayers: TokenType[];
 }
 
 type TokenTypes = TokenType.RED | TokenType.YELLOW;

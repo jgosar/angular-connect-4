@@ -36,6 +36,14 @@ export function findMax<T>(items: T[], rankingProperty: (item: T) => number): T 
   );
 }
 
+export async function findMaxAsync<T>(promises: Promise<T>[], rankingProperty: (item: T) => number): Promise<T | undefined> {
+  if (promises.length === 0) {
+    return undefined;
+  }
+
+  return new Promise(resolve=>Promise.all(promises).then(items=>resolve(findMax(items, rankingProperty))));
+}
+
 export function flip2DArray<T>(array: T[][]): T[][] {
   const result: T[][] = createArray(array[0].length, createArray(array.length, null));
   

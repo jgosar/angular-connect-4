@@ -5,4 +5,5 @@ export interface GameParams {
   columns: number;
   connectHowMany: number;
   firstToken: TokenType;
+  humanPlayers: TokenType[];
 }
