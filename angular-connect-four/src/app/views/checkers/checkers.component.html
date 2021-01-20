@@ -1,13 +1,13 @@
-<div class="acf-connect-4__grid_container">
+<div class="acf-checkers__grid_container">
   <acf-winner-banner [winner]="store.state.winner"></acf-winner-banner>
-  <div class="acf-connect-4__grid">
+  <div class="acf-checkers__grid">
     <div *ngFor="let row of store.state.field"
-      class="acf-connect-4__row">
+      class="acf-checkers__row">
       <div
         *ngFor="let cellState of row; let columnIndex = index"
-        class="acf-connect-4__cell"
-        [ngClass]="'acf-connect-4__cell--value_'+cellState"
-        (click)="store.playMove({column: columnIndex})"
+        class="acf-checkers__cell"
+        [ngClass]="'acf-checkers__cell--value_'+cellState"
+        (click)="store.playMove(columnIndex)"
       ></div>
     </div>
   </div>

@@ -1,3 +1,3 @@
-import { TokenType } from './token-type';
+import { Connect4TokenType } from '../services/connect-4/types/connect-4-token-type';
 
-export type CellState = TokenType | 0;
+export type CellState = Connect4TokenType | 0;

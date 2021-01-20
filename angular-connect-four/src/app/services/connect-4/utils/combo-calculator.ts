@@ -1,6 +1,6 @@
-import { range } from "../helpers/common.helpers";
-import { CellCoords } from "../types/cell-coords";
-import { ComboDirection, getComboDirectionNthCell } from "../types/combo-direction";
+import { range } from "../../../helpers/common.helpers";
+import { CellCoords } from "../../../types/cell-coords";
+import { ComboDirection, getComboDirectionNthCell } from "../../../types/combo-direction";
 
 export function getCellCombos(rowCount: number, columnCount: number, connectHowMany: number): CellCoords[][] {
   const allDirections: ComboDirection[] = [

@@ -1,13 +1,13 @@
 import { CellState } from 'src/app/types/cell-state';
-import { TokenType } from 'src/app/types/token-type';
+import { Connect4TokenType } from 'src/app/services/connect-4/types/connect-4-token-type';
 import { CellCoords } from 'src/app/types/cell-coords';
 
 export class Connect4StoreState {
   field: CellState[][];
   availableCellCombos: { [key in TokenTypes]: CellCoords[][] };
-  nextToken: TokenType;
-  winner: TokenType | undefined;
-  humanPlayers: TokenType[];
+  nextPlayer: Connect4TokenType;
+  winner: Connect4TokenType | undefined;
+  humanPlayers: Connect4TokenType[];
 }
 
-type TokenTypes = TokenType.RED | TokenType.YELLOW;
+type TokenTypes = Connect4TokenType.RED | Connect4TokenType.YELLOW;

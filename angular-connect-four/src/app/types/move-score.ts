@@ -1,4 +1,4 @@
-export interface MoveScore {
-  move: number;
+export interface MoveScore<T> {
+  move: T;
   score: number;
 }
