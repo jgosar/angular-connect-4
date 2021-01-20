@@ -1,0 +1,53 @@
+.acf-checkers__grid_container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  --grid-width: ~'max(500px, 30vw)';
+}
+
+.acf-checkers__grid {
+  background-color: #1111cc;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: var(--grid-width);
+  height: calc(0.75 * var(--grid-width));
+}
+
+.acf-checkers__row {
+  display: flex;
+  justify-content: space-around;
+}
+
+.acf-checkers__cell {
+  display: inline;
+  height: calc(0.1 * var(--grid-width));
+  width: calc(0.1 * var(--grid-width));
+  border-radius: 50%;
+}
+
+.acf-checkers__cell--value_0 {
+  background-color: black;
+}
+
+.acf-checkers__cell--value_1 {
+  background-color: #cc1111;
+}
+
+.acf-checkers__cell--value_2 {
+  background-color: #cccc11;
+}
+
+.acf-checkers__score {
+  display: none;
+}
+
+.acf-checkers__score--red {
+  background-color: red;
+}
+
+.acf-checkers__score--yellow {
+  background-color: yellow;
+}

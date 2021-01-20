@@ -1,54 +1,38 @@
-import { findMaxAsync, sum } from "../../../helpers/array.helpers";
-import { isDefined, range } from "../../../helpers/common.helpers";
+import { sum } from "../../../helpers/array.helpers";
+import { range } from "../../../helpers/common.helpers";
 import { Connect4StoreState } from "../connect-4.store.state";
-import { Connect4PlayMoveReducer } from "../reducers/connect-4-play-move.reducer";
 import { CellCoords } from "../../../types/cell-coords";
 import { CellState } from "../../../types/cell-state";
-import { MoveScore } from "../../../types/move-score";
 import { Connect4TokenType } from "../types/connect-4-token-type";
 import { DEFAULT_PREDICTION_DEPTH, PREDICTION_DEPTHS_FOR_POSSIBLE_MOVES } from "./connect-4-move-chooser.service.config";
 import { canPlayMove, getOtherTokenType, getWinner } from "../utils/connect-4-utils";
 import { Injectable } from "@angular/core";
 import { Connect4Move } from "../types/connect-4-move";
+import { MoveChooserService } from "src/app/generics/services/move-chooser.service";
+import { Reducer } from "src/app/reducer-store/reducer";
+import { Connect4PlayMoveReducer } from "../reducers/connect-4-play-move.reducer";
 
 @Injectable()
-export class Connect4MoveChooserService {
-  async getBestMove(state: Connect4StoreState, predictionDepth?: number): Promise<MoveScore<Connect4Move>> {
-    if(!isDefined(predictionDepth)){
-      const possibleMovesCount: number = this.getPossibleMoves(state).length;
-      predictionDepth = PREDICTION_DEPTHS_FOR_POSSIBLE_MOVES[possibleMovesCount]||DEFAULT_PREDICTION_DEPTH;
-    }
+export class Connect4MoveChooserService extends MoveChooserService<Connect4StoreState, Connect4Move, Connect4TokenType> {
 
-    const moveScores: Promise<MoveScore<Connect4Move>>[] = await this.getPossibleMoves(state).map(async (move) => ({
-      move,
-      score: await this.getMoveScore(state, predictionDepth, move),
-    }));
-    return await findMaxAsync(moveScores, (moveScore) => moveScore.score);
+  protected getPredictionDepthForPossibleMoves(possibleMovesCount: number){
+    return PREDICTION_DEPTHS_FOR_POSSIBLE_MOVES[possibleMovesCount]||DEFAULT_PREDICTION_DEPTH;
   }
 
-  private getPossibleMoves(state: Connect4StoreState): Connect4Move[] {
-      if (getWinner(state) !== undefined) {
-        return [];
-      }
-      return range(0, state.field[0].length).map(column=>({column})).filter(move => canPlayMove(state.field, move));
-    }
+  protected getWinner = getWinner;
 
-  private async getMoveScore(state: Connect4StoreState, levels: number, move: Connect4Move): Promise<number> {
-    const playMoveReducer: Connect4PlayMoveReducer = new Connect4PlayMoveReducer();
-    const nextState: Connect4StoreState = playMoveReducer.reduce(state, move);
-    if (levels === 0 || getWinner(nextState) !== undefined) {
-      return this.getScore(state.nextPlayer, nextState);
-    } else {
-      const bestOpponentsMove: MoveScore<Connect4Move> = await this.getBestMove(nextState, levels - 1);
-      if (bestOpponentsMove === undefined) {
-        // No moves are possible because the game is full
-        return this.getScore(state.nextPlayer, nextState);
-      }
-      return -bestOpponentsMove.score;
+  protected getPossibleMoves(state: Connect4StoreState): Connect4Move[]{
+    if (this.getWinner(state) !== undefined) {
+      return [];
     }
+    return range(0, state.field[0].length).map(column=>({column})).filter(move => canPlayMove(state.field, move));
   }
 
-  private getScore(player: Connect4TokenType, state: Connect4StoreState): number {
+  protected getPlayMoveReducer(): Reducer<Connect4StoreState, Connect4Move>{
+    return new Connect4PlayMoveReducer();
+  }
+
+  protected getScore(player: Connect4TokenType, state: Connect4StoreState): number {
     const playerCombos: CellCoords[][] = state.availableCellCombos[player];
     const playerScore: number = sum(
       playerCombos.map((cellCombo) => this.getScoreForCombo(player, state.field, cellCombo))

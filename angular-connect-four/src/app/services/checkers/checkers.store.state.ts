@@ -1,9 +1,7 @@
+import { GameStoreState } from "src/app/generics/game-store.state";
 import { CellState } from "src/app/types/cell-state";
-import { CheckersTokenType } from "./types/checkers-token-type";
+import { CheckersPlayerType } from "./types/checkers-player-type";
 
-export class CheckersStoreState {
+export class CheckersStoreState extends GameStoreState<CheckersPlayerType> {
   field: CellState[][];
-  nextPlayer: CheckersTokenType;
-  winner: CheckersTokenType | undefined;
-  humanPlayers: CheckersTokenType[];
 }
