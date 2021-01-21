@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { canPlayMove, getLowestFreeCell, getOtherTokenType, getWinner } from "src/app/services/connect-4/utils/connect-4-utils";
 import { cloneArray, getColumnValues } from "src/app/helpers/array.helpers";
-import { CellState } from "src/app/types/cell-state";
+import { Connect4CellState } from "src/app/services/connect-4/types/connect-4-cell-state";
 import { Connect4TokenType } from "src/app/services/connect-4/types/connect-4-token-type";
 import { Connect4StoreState } from "../connect-4.store.state";
 import { Reducer } from "../../../reducer-store/reducer";
@@ -19,7 +19,7 @@ export class Connect4PlayMoveReducer implements Reducer<Connect4StoreState, Conn
     const currentToken: Connect4TokenType = state.nextPlayer;
     const otherToken: Connect4TokenType = getOtherTokenType(currentToken);
     const rowIndex: number = getLowestFreeCell(getColumnValues(params.column, state.field));
-    const newField: CellState[][] = cloneArray(state.field);
+    const newField: Connect4CellState[][] = cloneArray(state.field);
     newField[rowIndex][params.column] = currentToken;
 
     // Remove all the combos that the opponent can't use because we have blocked them

@@ -12,11 +12,14 @@ import { LoadGameReducer } from './services/connect-4/reducers/load-game.reducer
 import { Connect4MoveChooserService } from './services/connect-4/move-chooser/connect-4-move-chooser.service';
 import { CheckersComponent } from './views/checkers/checkers.component';
 import { CheckersMoveChooserService } from './services/checkers/move-chooser/checkers-move-chooser-service';
+import { CheckersStore } from './services/checkers/checkers.store';
+import { CheckersInitGameReducer } from './services/checkers/reducers/checkers-init-game-reducer';
+import { CheckersPlayMoveReducer } from './services/checkers/reducers/checkers-play-move-reducer';
 
 @NgModule({
   declarations: [AppComponent, Connect4Component, CheckersComponent, WinnerBannerComponent],
   imports: [BrowserModule, HttpClientModule],
-  providers: [Connect4Store, Connect4InitGameReducer, Connect4PlayMoveReducer, LoadGameReducer, Connect4MoveChooserService, CheckersMoveChooserService],
+  providers: [Connect4Store, Connect4InitGameReducer, Connect4PlayMoveReducer, LoadGameReducer, Connect4MoveChooserService, CheckersStore, CheckersInitGameReducer, CheckersPlayMoveReducer, CheckersMoveChooserService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

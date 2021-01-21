@@ -1,6 +1,6 @@
 import { flip2DArray } from "../../../helpers/array.helpers";
 import { Connect4StoreState } from "../connect-4.store.state";
-import { CellState } from "../../../types/cell-state";
+import { Connect4CellState } from "../types/connect-4-cell-state";
 import { EncodedGameState } from "../../../types/encoded-game-state";
 import { Connect4GameParams } from "../types/connect-4-game-params";
 import { Connect4TokenType } from "../types/connect-4-token-type";
@@ -32,13 +32,13 @@ function encodeGameParams(state: Connect4StoreState): Connect4GameParams{
   };
 }
 
-function encodeColumnStates(playerOne: Connect4TokenType, field: CellState[][]): number[]{
+function encodeColumnStates(playerOne: Connect4TokenType, field: Connect4CellState[][]): number[]{
   return flip2DArray(field).map(columnState=>encodeColumnState(playerOne, columnState));
 }
 
-function encodeColumnState(playerOne: Connect4TokenType, columnState: CellState[]): number{
+function encodeColumnState(playerOne: Connect4TokenType, columnState: Connect4CellState[]): number{
   // Encode cells in column as binary number digits, add leading digit in case whole column is full
-  const lengthenedColumnState: CellState[] = [0].concat(columnState);
+  const lengthenedColumnState: Connect4CellState[] = [0].concat(columnState);
   const bits: number[] = lengthenedColumnState.map(cellState=>cellState===playerOne?1:0);
   const lowestFreeCell: number = getLowestFreeCell(lengthenedColumnState);
   bits[lowestFreeCell]=1;

@@ -1,3 +1,4 @@
+import { Reducer } from "src/app/reducer-store/reducer";
 import { ReducerStore } from "src/app/reducer-store/reducer-store";
 import { GameStoreState } from "../game-store.state";
 import { MoveChooserService } from "./move-chooser.service";
@@ -5,19 +6,20 @@ import { MoveChooserService } from "./move-chooser.service";
 // A=store state type
 // B=move type
 // C=player type
-export abstract class GameStore<A extends GameStoreState<C>,B,C> extends ReducerStore<A> {
+// D=init game params
+export abstract class GameStore<A extends GameStoreState<C>,B,C,D> extends ReducerStore<A> {
 
   constructor(
     private initialState: A,
-    protected initGameReducer: any,
-    protected playMoveReducer: any,
+    protected initGameReducer: Reducer<A, D>,
+    protected playMoveReducer: Reducer<A, B>,
     protected moveChooserService: MoveChooserService<A,B,C>,
   ) {
     super(initialState);
   }
 
-  initState(rows: number, columns: number, connectHowMany: number, firstToken: C, humanPlayers?: C[]) {
-    this.reduce(this.initGameReducer, {rows, columns, connectHowMany, firstToken, humanPlayers: humanPlayers||[firstToken]});
+  initState(gameParams: D) {
+    this.reduce(this.initGameReducer, gameParams);
     this.autoPlayMoveIfComputersTurn();
   }
 

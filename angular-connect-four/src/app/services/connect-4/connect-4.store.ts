@@ -7,9 +7,10 @@ import { Connect4InitGameReducer } from './reducers/connect-4-init-game-reducer'
 import { LoadGameReducer } from './reducers/load-game.reducer';
 import { Connect4Move } from './types/connect-4-move';
 import { GameStore } from 'src/app/generics/services/game.store';
+import { Connect4GameParams } from './types/connect-4-game-params';
 
 @Injectable()
-export class Connect4Store extends GameStore<Connect4StoreState, Connect4Move, Connect4TokenType> {
+export class Connect4Store extends GameStore<Connect4StoreState, Connect4Move, Connect4TokenType, Connect4GameParams> {
 
   constructor(
     protected initGameReducer: Connect4InitGameReducer,

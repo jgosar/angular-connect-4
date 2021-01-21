@@ -6,7 +6,8 @@
       <div
         *ngFor="let cellState of row; let columnIndex = index"
         class="acf-checkers__cell"
-        [ngClass]="'acf-checkers__cell--value_'+cellState"
+        [class.acf-checkers__cell--token]="cellState!==0"
+        [ngClass]="'acf-checkers__cell--token_'+cellState"
         (click)="store.playMove(columnIndex)"
       ></div>
     </div>

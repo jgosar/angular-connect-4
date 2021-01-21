@@ -2,7 +2,7 @@ import { sum } from "../../../helpers/array.helpers";
 import { range } from "../../../helpers/common.helpers";
 import { Connect4StoreState } from "../connect-4.store.state";
 import { CellCoords } from "../../../types/cell-coords";
-import { CellState } from "../../../types/cell-state";
+import { Connect4CellState } from "../types/connect-4-cell-state";
 import { Connect4TokenType } from "../types/connect-4-token-type";
 import { DEFAULT_PREDICTION_DEPTH, PREDICTION_DEPTHS_FOR_POSSIBLE_MOVES } from "./connect-4-move-chooser.service.config";
 import { canPlayMove, getOtherTokenType, getWinner } from "../utils/connect-4-utils";
@@ -15,7 +15,7 @@ import { Connect4PlayMoveReducer } from "../reducers/connect-4-play-move.reducer
 @Injectable()
 export class Connect4MoveChooserService extends MoveChooserService<Connect4StoreState, Connect4Move, Connect4TokenType> {
 
-  protected getPredictionDepthForPossibleMoves(possibleMovesCount: number){
+  protected getPredictionDepthForPossibleMoves(possibleMovesCount: number): number{
     return PREDICTION_DEPTHS_FOR_POSSIBLE_MOVES[possibleMovesCount]||DEFAULT_PREDICTION_DEPTH;
   }
 
@@ -46,9 +46,9 @@ export class Connect4MoveChooserService extends MoveChooserService<Connect4Store
     return playerScore - opponentScore;
   }
 
-  private getScoreForCombo(playersToken: Connect4TokenType, field: CellState[][], cellCombo: CellCoords[]): number {
+  private getScoreForCombo(playersToken: Connect4TokenType, field: Connect4CellState[][], cellCombo: CellCoords[]): number {
     let score: number;
-    const cellStatesInCombo: CellState[] = cellCombo.map((cellCoords) => field[cellCoords.row][cellCoords.column]);
+    const cellStatesInCombo: Connect4CellState[] = cellCombo.map((cellCoords) => field[cellCoords.row][cellCoords.column]);
     if (cellStatesInCombo.some((cellState) => cellState !== 0 && cellState !== playersToken)) {
       return 0;
     } else if (cellStatesInCombo.every((cellState) => cellState === playersToken)) {

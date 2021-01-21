@@ -1,9 +1,9 @@
-import { CheckersTokenType as CheckersTokenType } from "./checkers-token-type";
+import { CheckersPlayerType } from "./checkers-player-type";
 
 export interface CheckersGameParams {
   rows: number;
   columns: number;
   filledRows: number;
-  firstToken: CheckersTokenType;
-  humanPlayers: CheckersTokenType[];
+  firstToken: CheckersPlayerType;
+  humanPlayers: CheckersPlayerType[];
 }

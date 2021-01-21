@@ -21,7 +21,7 @@ export abstract class MoveChooserService<A extends GameStoreState<C>,B,C> {
     return await findMaxAsync(moveScores, (moveScore) => moveScore.score);
   }
 
-  protected abstract getPredictionDepthForPossibleMoves(possibleMovesCount: number);
+  protected abstract getPredictionDepthForPossibleMoves(possibleMovesCount: number): number;
 
   protected abstract getWinner(state: A): C | undefined;
 

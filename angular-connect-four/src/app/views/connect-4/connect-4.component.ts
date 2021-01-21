@@ -11,6 +11,12 @@ export class Connect4Component implements OnInit {
   constructor(public store: Connect4Store) {}
 
   ngOnInit() {
-    this.store.initState(6, 7, 4, Connect4TokenType.RED);
+    this.store.initState({
+      rows: 6,
+      columns: 7,
+      connectHowMany: 4,
+      firstToken: Connect4TokenType.RED,
+      humanPlayers: [Connect4TokenType.RED]
+    });
   }
 }
