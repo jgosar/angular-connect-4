@@ -10,7 +10,7 @@ import { Connect4Move } from "../types/connect-4-move";
 @Injectable()
 export class Connect4PlayMoveReducer implements Reducer<Connect4StoreState, Connect4Move>{
   reduce(state: Connect4StoreState, params: Connect4Move): Connect4StoreState {
-    if (state.winner || !canPlayMove(state.field, params)) {
+    if (state.winner || !canPlayMove(state, params)) {
       return {...state};
     }
 

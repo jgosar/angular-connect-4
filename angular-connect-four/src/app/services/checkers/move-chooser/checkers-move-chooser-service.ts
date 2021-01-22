@@ -4,6 +4,7 @@ import { Reducer } from "src/app/reducer-store/reducer";
 import { CheckersStoreState } from "../checkers.store.state";
 import { CheckersMove } from "../types/checkers-move";
 import { CheckersPlayerType } from "../types/checkers-player-type";
+import { getPossibleMoves } from "../utils/checkers-utils";
 
 @Injectable()
 export class CheckersMoveChooserService extends MoveChooserService<CheckersStoreState, CheckersMove, CheckersPlayerType> {
@@ -18,7 +19,7 @@ export class CheckersMoveChooserService extends MoveChooserService<CheckersStore
   }
 
   protected getPossibleMoves(state: CheckersStoreState): CheckersMove[]{
-    return []; // TODO
+    return getPossibleMoves(state);
   }
 
   protected getPlayMoveReducer(): Reducer<CheckersStoreState, CheckersMove>{

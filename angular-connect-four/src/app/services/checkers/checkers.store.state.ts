@@ -4,4 +4,5 @@ import { CheckersPlayerType } from "./types/checkers-player-type";
 
 export class CheckersStoreState extends GameStoreState<CheckersPlayerType> {
   field: CheckersCellState[][];
+  bottomPlayer: CheckersPlayerType;
 }

@@ -8,8 +8,8 @@ export function getOtherTokenType(tokenType: Connect4TokenType): Connect4TokenTy
   return tokenType === Connect4TokenType.RED ? Connect4TokenType.YELLOW : Connect4TokenType.RED;
 }
 
-export function canPlayMove(field: Connect4CellState[][], move: Connect4Move): boolean {
-  return field[0][move.column] === 0;
+export function canPlayMove(state: Connect4StoreState, move: Connect4Move): boolean {
+  return state.field[0][move.column] === 0;
 }
 
 export function getWinner(state: Connect4StoreState): Connect4TokenType | undefined {

@@ -25,7 +25,7 @@ export class Connect4MoveChooserService extends MoveChooserService<Connect4Store
     if (this.getWinner(state) !== undefined) {
       return [];
     }
-    return range(0, state.field[0].length).map(column=>({column})).filter(move => canPlayMove(state.field, move));
+    return range(0, state.field[0].length).map(column=>({column})).filter(move => canPlayMove(state, move));
   }
 
   protected getPlayMoveReducer(): Reducer<Connect4StoreState, Connect4Move>{

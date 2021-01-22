@@ -27,6 +27,7 @@ export class CheckersInitGameReducer implements Reducer<CheckersStoreState, Chec
 
     return {
       field,
+      bottomPlayer,
       nextPlayer: params.firstToken,
       winner: undefined,
       humanPlayers: params.humanPlayers
