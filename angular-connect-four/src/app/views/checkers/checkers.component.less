@@ -1,20 +1,22 @@
 .acf-checkers__grid_container {
+  --grid-row-column-ratio: calc(var(--grid-row-count) / var(--grid-column-count));
   height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  --grid-width: ~'clamp(30vw, 500px, 100vw)';
+  --grid-width: ~'min(95vw, calc(95vh / var(--grid-row-column-ratio)))';
+  --grid-height: ~'min(95vh, calc(95vw * var(--grid-row-column-ratio)))';
 }
 
 .acf-checkers__grid {
-  background-color: #621;
+  background-color: #832;
   display: grid;
   grid-template-columns: repeat(var(--grid-column-count), 1fr);
   grid-template-rows: repeat(var(--grid-row-count), 1fr);
   justify-content: space-around;
   width: var(--grid-width);
-  height: var(--grid-width);
+  height: var(--grid-height);
   padding: 1%;
 }
 
