@@ -36,10 +36,18 @@ export abstract class MoveChooserService<A extends GameStoreState<C>,B,C> {
     const nextState: A = playMoveReducer.reduce(state, move);
     if (levels === 0 || this.getWinner(nextState) !== undefined) {
       return this.getScore(state.nextPlayer, nextState);
+    } else if(state.nextPlayer===nextState.nextPlayer){
+      // Same player gets another turn, do not reduce levels count
+      const bestNextMove: MoveScore<B> = await this.getBestMove(nextState, levels);
+      if (bestNextMove === undefined) {
+        // No moves are possible
+        return this.getScore(state.nextPlayer, nextState);
+      }
+      return bestNextMove.score;
     } else {
       const bestOpponentsMove: MoveScore<B> = await this.getBestMove(nextState, levels - 1);
       if (bestOpponentsMove === undefined) {
-        // No moves are possible because the game is full
+        // No moves are possible
         return this.getScore(state.nextPlayer, nextState);
       }
       return -bestOpponentsMove.score;

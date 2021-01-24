@@ -64,11 +64,17 @@ export function getMove(state: CheckersStoreState, [row, column]: number[], dire
 }
 
 export function getPossibleMovesFromLocation(state: CheckersStoreState, [row, column]: number[]): CheckersMove[]{
-  return ALL_DIRECTIONS.map(direction=>this.getMove(state, [row, column], direction)).filter(isDefined);
+  return ALL_DIRECTIONS.map(direction=>getMove(state, [row, column], direction)).filter(isDefined);
 }
 
 export function getPossibleMoves(state: CheckersStoreState): CheckersMove[]{
-  return getNextPlayersTokenLocations(state).map(location=>getPossibleMovesFromLocation(state, location)).flat();
+  const allPossibleMoves: CheckersMove[] = getNextPlayersTokenLocations(state).map(location=>getPossibleMovesFromLocation(state, location)).flat();
+  // If any jumps are possible, only jumps should be allowed
+  if(allPossibleMoves.some(move=>move.type===CheckersMoveType.JUMP)){
+    return allPossibleMoves.filter(move=>move.type===CheckersMoveType.JUMP);
+  } else{
+    return allPossibleMoves;
+  }
 }
 
 function getNextPlayersTokenLocations(state: CheckersStoreState): number[][]{

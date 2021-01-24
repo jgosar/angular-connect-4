@@ -13,14 +13,14 @@ export class CheckersInitGameReducer implements Reducer<CheckersStoreState, Chec
     const field: CheckersCellState[][] = createArray(params.rows, createArray(params.columns, 0));
     const bottomPlayer: CheckersPlayerType = [...(params.humanPlayers||[]), CheckersPlayerType.BLACK][0];
     const topPlayer: CheckersPlayerType = getOtherPlayer(bottomPlayer);
-    for(let i=0;i<params.filledRows;i++){
-      for(let j=0;j<params.columns;j++){
-        if((i+j)%2===1){
-          field[i][j]=getDefaultTokenForPlayer(topPlayer);
+    for(let row=0;row<params.filledRows;row++){
+      for(let column=0;column<params.columns;column++){
+        if((row+column)%2===1){
+          field[row][column]=getDefaultTokenForPlayer(topPlayer);
         }
-        const i2: number = params.rows-i-1;
-        if((i2+j)%2===1){
-          field[i2][j]=getDefaultTokenForPlayer(bottomPlayer);
+        const rowFromBottom: number = params.rows-row-1;
+        if((rowFromBottom+column)%2===1){
+          field[rowFromBottom][column]=getDefaultTokenForPlayer(bottomPlayer);
         }
       }
     }

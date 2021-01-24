@@ -6,6 +6,10 @@
   align-items: center;
 }
 
+.acf-checkers__grid_container acf-winner-banner {
+  --grid-width: ~'max(500px, 30vw)';
+}
+
 .acf-checkers__grid {
   background-color: #621;
   display: flex;
@@ -49,4 +53,18 @@
 .acf-checkers__cell--token_2::before {
   background-color: #ddd;
   box-shadow: 10px 10px 20px #000, inset 0px 0px 5px #fff;
+}
+
+.acf-checkers__cell--token_3::before {
+  background-color: #800;
+  box-shadow: 10px 10px 20px #000, inset 0px 0px 5px #000;
+}
+
+.acf-checkers__cell--token_4::before {
+  background-color: #f88;
+  box-shadow: 10px 10px 20px #000, inset 0px 0px 5px #fff;
+}
+
+.acf-checkers__cell--active {
+  background-color: rgba(0, 255, 0, 0.5);
 }

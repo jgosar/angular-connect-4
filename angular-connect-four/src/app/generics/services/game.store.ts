@@ -41,7 +41,7 @@ export abstract class GameStore<A extends GameStoreState<C>,B,C,D> extends Reduc
   }
 
   private autoPlayMoveIfComputersTurn(){
-    if(!this.state.humanPlayers.includes(this.state.nextPlayer)){
+    if(!this.state.winner && !this.state.humanPlayers.includes(this.state.nextPlayer)){
       this.moveChooserService.getBestMove(this.state).then(moveScore=>{
         this.playMove(moveScore.move, false);
       });

@@ -29,7 +29,7 @@ export class CheckersPlayMoveReducer implements Reducer<CheckersStoreState, Chec
 
     let tokenType: CheckersTokenType = newField[move.row][move.column];
 
-    if(!KING_TOKENS.includes(tokenType) && (targetCoords[0]===0 || targetCoords[0]===targetCoords.length-1)){
+    if(!KING_TOKENS.includes(tokenType) && (targetCoords[0]===0 || targetCoords[0]===newField.length-1)){
       tokenType = this.getUpgradedToken(tokenType); // Token has reached the end, we can upgrade it
     }
 
@@ -46,7 +46,7 @@ export class CheckersPlayMoveReducer implements Reducer<CheckersStoreState, Chec
 
     newState = {...newState, nextPlayer: getOtherPlayer(state.nextPlayer)};
 
-    if(getPossibleMoves(state).length===0){
+    if(getPossibleMoves(newState).length===0){
       newState = {...newState, winner: state.nextPlayer};
     }
 
