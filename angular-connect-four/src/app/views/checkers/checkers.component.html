@@ -1,17 +1,19 @@
-<div class="acf-checkers__grid_container">
+<div class="acf-checkers__grid_container"
+[style.--grid-column-count]="store.state.field[0].length"
+[style.--grid-row-count]="store.state.field.length">
   <acf-winner-banner [game]="'Checkers'" [winner]="store.state.winner"></acf-winner-banner>
   <div class="acf-checkers__grid">
-    <div *ngFor="let row of store.state.field; let rowIndex = index"
-      class="acf-checkers__row">
+    <ng-container *ngFor="let row of store.state.field; let rowIndex = index">
       <div
         *ngFor="let cellState of row; let columnIndex = index"
         class="acf-checkers__cell"
+        [class.acf-checkers__cell--bright]="(rowIndex+columnIndex)%2 === 0"
         [class.acf-checkers__cell--token]="cellState!==0"
         [class.acf-checkers__cell--active]="activeCell && (rowIndex === activeCell[0] && columnIndex === activeCell[1])"
         [ngClass]="'acf-checkers__cell--token_'+cellState"
         (click)="cellClicked(rowIndex, columnIndex)"
       ></div>
-    </div>
+    </ng-container>
   </div>
   <acf-winner-banner [game]="'Checkers'" [winner]="store.state.winner"></acf-winner-banner>
 </div>

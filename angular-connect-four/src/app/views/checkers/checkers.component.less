@@ -4,35 +4,24 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-}
-
-.acf-checkers__grid_container acf-winner-banner {
-  --grid-width: ~'max(500px, 30vw)';
+  --grid-width: ~'clamp(30vw, 500px, 100vw)';
 }
 
 .acf-checkers__grid {
   background-color: #621;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(var(--grid-column-count), 1fr);
+  grid-template-rows: repeat(var(--grid-row-count), 1fr);
   justify-content: space-around;
-  width: fit-content;
-  height: fit-content;
+  width: var(--grid-width);
+  height: var(--grid-width);
   padding: 1%;
 }
 
-.acf-checkers__row {
-  display: flex;
-  justify-content: space-around;
-}
-
 .acf-checkers__cell {
-  display: inline;
-  height: ~'max(60px, 4vw)';
-  width: ~'max(60px, 4vw)';
 }
 
-.acf-checkers__row:nth-child(odd) .acf-checkers__cell:nth-child(odd),
-.acf-checkers__row:nth-child(even) .acf-checkers__cell:nth-child(even) {
+.acf-checkers__cell--bright {
   background-color: #eca;
 }
 

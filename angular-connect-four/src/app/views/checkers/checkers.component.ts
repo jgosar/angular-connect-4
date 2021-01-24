@@ -1,4 +1,3 @@
-import { state } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -7,7 +6,7 @@ import { CheckersMove } from 'src/app/services/checkers/types/checkers-move';
 import { CheckersMoveDirection } from 'src/app/services/checkers/types/checkers-move-direction';
 import { CheckersMoveType } from 'src/app/services/checkers/types/checkers-move-type';
 import { CheckersPlayerType } from 'src/app/services/checkers/types/checkers-player-type';
-import { getPlayerForToken, getPossibleMoves, getPossibleMovesFromLocation, offsetCoords } from 'src/app/services/checkers/utils/checkers-utils';
+import { getPossibleMoves, getPossibleMovesFromLocation, offsetCoords } from 'src/app/services/checkers/utils/checkers-utils';
 
 @Component({
   selector: 'acf-checkers',
