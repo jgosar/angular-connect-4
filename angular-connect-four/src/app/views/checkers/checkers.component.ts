@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CheckersStore } from 'src/app/services/checkers/checkers.store';
@@ -20,16 +21,18 @@ export class CheckersComponent implements OnInit {
   
   private ngUnsubscribe$: Subject<void> = new Subject();
 
-  constructor(public store: CheckersStore) {
+  constructor(public store: CheckersStore, private route: ActivatedRoute,) {
   }
 
   ngOnInit() {
-    this.store.initState({
-      rows: 8,
-      columns: 8,
-      filledRows: 3,
-      firstToken: CheckersPlayerType.BLACK,
-      humanPlayers: [CheckersPlayerType.BLACK]
+    this.route.params.subscribe(params => {
+      this.store.initState({
+        rows: parseInt(params['rows']),
+        columns: parseInt(params['columns']),
+        filledRows: parseInt(params['filledRows']),
+        firstToken: CheckersPlayerType.BLACK,
+        humanPlayers: [CheckersPlayerType.BLACK]
+      });
     });
     this.store.state$
       .pipe(takeUntil(this.ngUnsubscribe$))

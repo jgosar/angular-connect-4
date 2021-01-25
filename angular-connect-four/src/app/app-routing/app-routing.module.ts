@@ -15,6 +15,10 @@ const routes: Routes = [
     },
     {
         path: 'checkers',
+        redirectTo: 'checkers/8/8/3'
+    },
+    {
+        path: 'checkers/:rows/:columns/:filledRows',
         component: CheckersComponent,
     },
 ];

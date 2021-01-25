@@ -1,4 +1,5 @@
-<div class="acf-checkers__grid_container"
+<div *ngIf="store.state.field"
+class="acf-checkers__grid_container"
 [style.--grid-column-count]="store.state.field[0].length"
 [style.--grid-row-count]="store.state.field.length">
   <acf-winner-banner [game]="'Checkers'" [winner]="store.state.winner"></acf-winner-banner>
