@@ -1,0 +1,5 @@
+<ul class="acf-game-chooser__games">
+  <li *ngFor="let game of games" class="acf-game-chooser__game">
+    <a [routerLink]="game.url">{{game.name}}</a>
+  </li>
+</ul>

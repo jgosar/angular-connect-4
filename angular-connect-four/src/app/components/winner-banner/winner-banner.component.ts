@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { CheckersPlayerType } from '../services/checkers/types/checkers-player-type';
-import { Connect4TokenType } from '../services/connect-4/types/connect-4-token-type';
+import { CheckersPlayerType } from '../../services/checkers/types/checkers-player-type';
+import { Connect4TokenType } from '../../services/connect-4/types/connect-4-token-type';
 
 @Component({
   selector: 'acf-winner-banner',
