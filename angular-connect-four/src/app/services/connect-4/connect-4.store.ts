@@ -1,56 +1,27 @@
 import { Injectable } from '@angular/core';
 import { Connect4StoreState } from './connect-4.store.state';
-import { TokenType } from 'src/app/types/token-type';
-import { MoveScore } from 'src/app/types/move-score';
-import { MoveChooserService } from 'src/app/services/move-chooser/move-chooser.service';
-import { DropTokenReducer } from './reducers/drop-token.reducer';
-import { InitGameReducer } from './reducers/init-game-reducer';
-import { ReducerStore } from 'src/app/reducer-store/reducer-store';
+import { Connect4TokenType } from 'src/app/services/connect-4/types/connect-4-token-type';
+import { Connect4MoveChooserService } from 'src/app/services/connect-4/move-chooser/connect-4-move-chooser.service';
+import { Connect4PlayMoveReducer } from './reducers/connect-4-play-move.reducer';
+import { Connect4InitGameReducer } from './reducers/connect-4-init-game-reducer';
 import { LoadGameReducer } from './reducers/load-game.reducer';
+import { Connect4Move } from './types/connect-4-move';
+import { GameStore } from 'src/app/generics/services/game.store';
+import { Connect4GameParams } from './types/connect-4-game-params';
 
 @Injectable()
-export class Connect4Store extends ReducerStore<Connect4StoreState> {
+export class Connect4Store extends GameStore<Connect4StoreState, Connect4Move, Connect4TokenType, Connect4GameParams> {
 
   constructor(
-    private initGameReducer: InitGameReducer,
-    private dropTokenReducer: DropTokenReducer,
+    protected initGameReducer: Connect4InitGameReducer,
+    protected playMoveReducer: Connect4PlayMoveReducer,
+    protected moveChooserService: Connect4MoveChooserService,
     private loadGameReducer: LoadGameReducer,
-    private moveChooserService: MoveChooserService
   ) {
-    super(new Connect4StoreState());
+    super(new Connect4StoreState(), initGameReducer, playMoveReducer, moveChooserService);
   }
-
-  initState(rows: number, columns: number, connectHowMany: number, firstToken: TokenType, humanPlayers?: TokenType[]) {
-    this.reduce(this.initGameReducer, {rows, columns, connectHowMany, firstToken, humanPlayers: humanPlayers||[firstToken]});
-    this.autoPlayMoveIfComputersTurn();
-  }
-
-  loadState(rows: number, columns: number, connectHowMany: number, firstToken: TokenType, columnStates: number[]) {
+  
+  loadState(rows: number, columns: number, connectHowMany: number, firstToken: Connect4TokenType, columnStates: number[]) {
     this.reduce(this.loadGameReducer, {gameParams: {rows, columns, connectHowMany, firstToken, humanPlayers: [firstToken]}, columnStates});
-  }
-
-  dropToken(columnIndex: number, playedByAHuman: boolean = true) {
-    if(playedByAHuman && !this.state.humanPlayers.includes(this.state.nextToken)){
-      console.warn("You can't drop a token now, the computer is thinking");
-      return;
-    }
-    if(!playedByAHuman && this.state.humanPlayers.includes(this.state.nextToken)){
-      console.warn("You can't drop a token now, the human is thinking");
-      return;
-    }
-
-    this.reduce(this.dropTokenReducer, {columnIndex});
-
-    setTimeout(()=>{
-      this.autoPlayMoveIfComputersTurn();
-    });
-  }
-
-  private autoPlayMoveIfComputersTurn(){
-    if(!this.state.humanPlayers.includes(this.state.nextToken)){
-      this.moveChooserService.getBestMove(this.state).then(move=>{
-        this.dropToken(move.move, false);
-      });
-    }
   }
 }

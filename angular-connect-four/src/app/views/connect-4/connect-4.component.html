@@ -1,5 +1,5 @@
 <div class="acf-connect-4__grid_container">
-  <acf-winner-banner [winner]="store.state.winner"></acf-winner-banner>
+  <acf-winner-banner [game]="'Connect4'" [winner]="store.state.winner"></acf-winner-banner>
   <div class="acf-connect-4__grid">
     <div *ngFor="let row of store.state.field"
       class="acf-connect-4__row">
@@ -7,9 +7,9 @@
         *ngFor="let cellState of row; let columnIndex = index"
         class="acf-connect-4__cell"
         [ngClass]="'acf-connect-4__cell--value_'+cellState"
-        (click)="store.dropToken(columnIndex)"
+        (click)="store.playMove({column: columnIndex})"
       ></div>
     </div>
   </div>
-  <acf-winner-banner [winner]="store.state.winner"></acf-winner-banner>
+  <acf-winner-banner [game]="'Connect4'" [winner]="store.state.winner"></acf-winner-banner>
 </div>

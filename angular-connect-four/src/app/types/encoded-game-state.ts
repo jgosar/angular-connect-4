@@ -1,6 +1,6 @@
-import { GameParams } from "./game-params";
+import { Connect4GameParams } from "../services/connect-4/types/connect-4-game-params";
 
 export interface EncodedGameState{
-  gameParams: GameParams;
+  gameParams: Connect4GameParams;
   columnStates: number[];
 }
