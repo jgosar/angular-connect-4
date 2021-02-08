@@ -1,7 +1,7 @@
 <div *ngIf="store.state.field"
-class="acf-checkers__grid_container"
-[style.--grid-column-count]="store.state.field[0].length"
-[style.--grid-row-count]="store.state.field.length">
+  class="acf-checkers__grid_container"
+  [style.--grid-column-count]="store.state.field[0].length"
+  [style.--grid-row-count]="store.state.field.length">
   <acf-winner-banner [game]="'Checkers'" [winner]="store.state.winner"></acf-winner-banner>
   <div class="acf-checkers__grid">
     <ng-container *ngFor="let row of store.state.field; let rowIndex = index">

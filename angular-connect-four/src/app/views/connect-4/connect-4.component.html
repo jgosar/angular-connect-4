@@ -1,15 +1,18 @@
-<div class="acf-connect-4__grid_container">
+<div *ngIf="store.state.field"
+  class="acf-connect-4__grid_container"
+  [style.--grid-column-count]="store.state.field[0].length"
+  [style.--grid-row-count]="store.state.field.length">
   <acf-winner-banner [game]="'Connect4'" [winner]="store.state.winner"></acf-winner-banner>
   <div class="acf-connect-4__grid">
-    <div *ngFor="let row of store.state.field"
-      class="acf-connect-4__row">
+    <ng-container *ngFor="let row of store.state.field; let rowIndex = index">
       <div
         *ngFor="let cellState of row; let columnIndex = index"
         class="acf-connect-4__cell"
-        [ngClass]="'acf-connect-4__cell--value_'+cellState"
+        [class.acf-connect-4__cell--token]="cellState!==0"
+        [ngClass]="'acf-connect-4__cell--token_'+cellState"
         (click)="store.playMove({column: columnIndex})"
       ></div>
-    </div>
+    </ng-container>
   </div>
   <acf-winner-banner [game]="'Connect4'" [winner]="store.state.winner"></acf-winner-banner>
 </div>
