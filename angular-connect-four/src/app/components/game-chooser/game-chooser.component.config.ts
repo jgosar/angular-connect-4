@@ -2,11 +2,11 @@ export const GAMES = [
   {
     name: 'Connect 4',
     url: '/connect-4',
-    thumbnail: '../../../assets/icons/connect-4.png'
+    thumbnailClass: 'connect-4'
   },
   {
     name: 'Checkers',
     url: '/checkers',
-    thumbnail: '../../../assets/icons/checkers.png'
+    thumbnailClass: 'checkers'
   }
 ];
