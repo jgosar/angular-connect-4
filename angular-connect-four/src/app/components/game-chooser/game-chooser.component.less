@@ -1,0 +1,43 @@
+.acf-game-chooser__games {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.acf-game-chooser__game {
+  width: 200px;
+  height: 200px;
+  background-color: aqua;
+  border: 2px solid blue;
+  box-shadow: 2px 2px 2px #000;
+  display: block;
+  border-radius: 10px;
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  transition: 0.5s;
+}
+
+.acf-game-chooser__game:hover {
+  transform: scale(1.1);
+  box-shadow: 5px 5px 5px #000;
+}
+
+.acf-game-chooser__game_thumbnail {
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  width: 60%;
+  height: 60%;
+}
+
+.acf-game-chooser__game_name {
+  font-weight: bold;
+}
