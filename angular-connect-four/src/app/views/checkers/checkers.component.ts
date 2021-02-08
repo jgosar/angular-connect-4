@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -14,7 +14,7 @@ import { getPossibleMoves, getPossibleMovesFromLocation, offsetCoords } from 'sr
   templateUrl: './checkers.component.html',
   styleUrls: ['./checkers.component.less'],
 })
-export class CheckersComponent implements OnInit {
+export class CheckersComponent implements OnInit, OnDestroy {
   activeCell: number[];
   targetCells: number[][] = [];
   possibleMoves: CheckersMove[];
@@ -25,7 +25,9 @@ export class CheckersComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
+    this.route.params
+      .pipe(takeUntil(this.ngUnsubscribe$))
+      .subscribe(params => {
       this.store.initState({
         rows: parseInt(params['rows']),
         columns: parseInt(params['columns']),

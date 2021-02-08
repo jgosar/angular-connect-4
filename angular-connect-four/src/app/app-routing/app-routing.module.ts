@@ -11,6 +11,10 @@ const routes: Routes = [
     },
     {
         path: 'connect-4',
+        redirectTo: 'connect-4/6/7/4'
+    },
+    {
+        path: 'connect-4/:rows/:columns/:connectHowMany',
         component: Connect4Component,
     },
     {
